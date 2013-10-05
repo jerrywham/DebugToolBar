@@ -1,36 +1,45 @@
-explain
-=======
+DebugToolBar
+============
 
-PHP method for debug
+Barre de debug disponible sur toutes les pages (publiques et privées). Elle s'affiche en bas de page.
+Toutes les variables globales sont disponibles par défaut ($_POST, $_GET, $_FILES, $_SESSION, $_COOKIE, $_REQUEST).
 
+Pour la rendre fonctionnelle, il faut 
+* inclure la classe en haut de page
+		
+		include_once(path/to/debugToolBar.php');
 
-Méthode de debug PHP
- 
-- @param  var                la variable à analyser
-- @param  html     bool      affiche la sortie au format html ou modifie les balises html par leur équivalent unicode
-- @param  return   bool      affiche ou non le résultat qui peut ainsi être récupéré dans une variable
-- @param  sub      integer   affiche le résultat entre des balises pre
-- @param  way      string    sens de lecture du tableau debug_backtrace
-- @return          string    le résultat
+* ajouter la ligne suivante juste avant la balise &lt;/body&gt;
 
-@author unknown, JeromeJ, Cyril MAGUIRE
+		Debug::getInstance()->printBar();
+		
 
-How to use
-----
+Exploration d'une variable
+--------------------------
 
-Importer le fichier en début de script en faisant :
+Il est possible également de voir le contenu d'une variable. Pour cela, il faut appeler la méthode statique trac().
+Deux paramètres sont à saisir : le premier obligatoire est la variable à explorer, le deuxième optionnel est le message
+que l'on souhaite afficher (généralement, le nom de la variable entre guillemets).
 
-`require 'explain.php';`
+        Debug::tac($var,'$var');
+        
+Il existe un raccourci pour cette méthode. Ainsi, on obtiendra le même résultat que précédemment en faisant :
+    
+        d($var,'$var');
+        
 
-Puis dans le code à débugguer, taper un des examples suivants :
+Exploration d'une variable dans une boucle
+------------------------------------------
 
-- explain($MyVar);
-- explain($MyVar,true);
-- $result = explain($MyVar,false,true);
-- explain($MyVar,false,false,1);
+On utilisera pour cela la méthode flow() qui évite l'arrêt du script.
 
-Shortcuts
---
+        foreach($var as $k => $v) {
+            Debug::flow($v);
+        }
+        
 
-- e($MyVar); produit le même résultat que :       explain($MyVar);
-- ed($MyVar); produit le même résultat que :      explain($MyVar);exit(); 
+Un raccourci existe également pour cette méthode :
+
+        foreach($var as $k => $v) {
+            f($v);
+        }
